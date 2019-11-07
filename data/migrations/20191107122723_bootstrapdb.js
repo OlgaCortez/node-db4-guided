@@ -28,15 +28,13 @@ exports.up = function(knex) {
     })
     .createTable('animal_zoos', tbl => {
         tbl.increments();
-
-        tbl.date('from').notNullable();
-        tbl.date('to');
-
+        tbl.string('name', 255).notNullable();
+ 
         tbl
         .integer('zoo_id')
         .unsigned()
         .references('id')
-        .inTable('zoo')
+        .inTable('zoos')
         .onDelete('RESTRICT') 
         .onUpdate('CASCADE');
 
@@ -44,15 +42,22 @@ exports.up = function(knex) {
         .integer('animal_id')
         .unsigned()
         .references('id')
-        .inTable('animal')
+        .inTable('animals')
         .onDelete('RESTRICT') 
         .onUpdate('CASCADE');
+
+        tbl.date('from').notNullable();
+        tbl.date('to');
 
     });
 };
 
 exports.down = function(knex) {
-  
+  return knex.schema
+  .dropTableIfExists('animal_zoos')
+  .dropTableIfExists('zoos')
+  .dropTableIfExists('animals')
+  .dropTableIfExists('species');
 };
 
 //knex... command not found: knex -> npm knex ... or install knex globally with npm i -g knex
